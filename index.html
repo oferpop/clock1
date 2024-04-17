@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Teller</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: #00FFD1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #clock {
+            font-size: 3em;
+            text-align: center;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 209, 0.5);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock"></div>
+
+    <script>
+        var lastMinute = null; // To store the last announced minute
+
+        function updateClock() {
+            var now = new Date();
+
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+
+            // Convert hours to 12-hour format
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+            var timeString = hours + ":" + minutes + " " + ampm;
+            var clock = document.getElementById("clock");
+            clock.innerHTML = "Time: " + timeString;
+
+            // Speak the time if the minute has changed
+            if (minutes !== lastMinute) {
+                speakTime(hours, minutes, ampm);
+                lastMinute = minutes;
+            }
+        }
+
+        function speakTime(hours, minutes, ampm) {
+            var msg = new SpeechSynthesisUtterance();
+            msg.text = "The time is " + hours + " " + minutes + " " + ampm;
+            msg.lang = 'en-US'; // Specify language (US English)
+            msg.volume = 1; // Set volume (0 to 1)
+            msg.rate = 1; // Set speech rate (0.1 to 10)
+            speechSynthesis.speak(msg);
+        }
+
+        // Update clock every second
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
